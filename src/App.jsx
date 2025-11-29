@@ -5,37 +5,21 @@ import Player from './components/Player';
 import Log from './components/Log';
 import GameOver from './components/GameOver';
 import { WINNING_COMBINATIONS } from './winning-combination';
-
-const initialGameState = [
-  [null, null, null],
-  [null, null, null],
-  [null, null, null],
-];
-
-const getActivePlayerSymbol = (turns) => {
-  let currentSymbol = 'X';
-  if (turns.length && turns[0].playerSymbol === 'X') {
-    currentSymbol = 'O';
-  }
-  return currentSymbol;
-};
+import {
+  PLAYERS,
+  getActivePlayerSymbol,
+  getWinner,
+  deriveGameBoard,
+} from './helper';
 
 function App() {
-  const [players, setPlayer] = useState({
-    X: 'Player 1',
-    O: 'Player 2',
-  });
-
+  const [players, setPlayers] = useState(PLAYERS);
   const [gameTurn, setGameTurn] = useState([]);
 
   const activePlayerSymbol = getActivePlayerSymbol(gameTurn);
-
-  const gameBoard = [...initialGameState.map((row) => [...row])];
-
-  for (let turn of gameTurn) {
-    const { row, col } = turn.symbol;
-    gameBoard[row][col] = turn.playerSymbol;
-  }
+  const gameBoard = deriveGameBoard(gameTurn);
+  const winner = getWinner(gameBoard, players, WINNING_COMBINATIONS);
+  const isDraw = gameTurn.length === 9 && !winner;
 
   const handleSymbolChange = (selectedRow, selectedCol) => {
     setGameTurn((turns) => {
@@ -54,31 +38,11 @@ function App() {
   };
 
   const handlePlayerChange = (symbol, name) => {
-    setPlayer((prevPlayers) => ({
+    setPlayers((prevPlayers) => ({
       ...prevPlayers,
       [symbol]: name,
     }));
   };
-
-  let winner;
-
-  for (let combination of WINNING_COMBINATIONS) {
-    const [first, second, third] = combination;
-    const firstSymbol = gameBoard[first.row][first.column];
-    const secondSymbol = gameBoard[second.row][second.column];
-    const thirdSymbol = gameBoard[third.row][third.column];
-
-    if (
-      firstSymbol &&
-      firstSymbol === secondSymbol &&
-      firstSymbol === thirdSymbol
-    ) {
-      winner = players[firstSymbol];
-      break;
-    }
-  }
-
-  let isDraw = gameTurn.length === 9 && !winner;
 
   return (
     <>
@@ -87,13 +51,13 @@ function App() {
         <div id="game-container">
           <ol id="players" className="highlight-player">
             <Player
-              name="Player 1"
+              name={PLAYERS.X}
               symbol="X"
               isActive={activePlayerSymbol === 'X'}
               onPlayerNameChange={handlePlayerChange}
             />
             <Player
-              name="Player 2"
+              name={PLAYERS.O}
               symbol="O"
               isActive={activePlayerSymbol === 'O'}
               onPlayerNameChange={handlePlayerChange}
