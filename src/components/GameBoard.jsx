@@ -19,7 +19,10 @@ export default function GameBoard({ gameTurn, onSymbolChange }) {
           <ol>
             {row.map((symbol, symbolIndex) => (
               <li key={symbolIndex} className="board-cell">
-                <button onClick={() => onSymbolChange(rowIndex, symbolIndex)}>
+                <button
+                  onClick={() => onSymbolChange(rowIndex, symbolIndex)}
+                  disabled={!!symbol}
+                >
                   {symbol}
                 </button>
               </li>
