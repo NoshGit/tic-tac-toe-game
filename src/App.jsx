@@ -21,6 +21,11 @@ const getActivePlayerSymbol = (turns) => {
 };
 
 function App() {
+  const [players, setPlayer] = useState({
+    X: 'Player 1',
+    O: 'Player 2',
+  });
+
   const [gameTurn, setGameTurn] = useState([]);
 
   const activePlayerSymbol = getActivePlayerSymbol(gameTurn);
@@ -48,6 +53,13 @@ function App() {
     setGameTurn([]);
   };
 
+  const handlePlayerChange = (symbol, name) => {
+    setPlayer((prevPlayers) => ({
+      ...prevPlayers,
+      [symbol]: name,
+    }));
+  };
+
   let winner;
 
   for (let combination of WINNING_COMBINATIONS) {
@@ -61,7 +73,7 @@ function App() {
       firstSymbol === secondSymbol &&
       firstSymbol === thirdSymbol
     ) {
-      winner = firstSymbol;
+      winner = players[firstSymbol];
       break;
     }
   }
@@ -78,11 +90,13 @@ function App() {
               name="Player 1"
               symbol="X"
               isActive={activePlayerSymbol === 'X'}
+              onPlayerNameChange={handlePlayerChange}
             />
             <Player
               name="Player 2"
               symbol="O"
               isActive={activePlayerSymbol === 'O'}
+              onPlayerNameChange={handlePlayerChange}
             />
           </ol>
           {(winner || isDraw) && (
