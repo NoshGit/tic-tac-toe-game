@@ -2,6 +2,7 @@ import { useState } from 'react';
 import GameBoard from './components/GameBoard';
 import Header from './components/Header';
 import Player from './components/Player';
+import Log from './components/Log';
 
 const getActivePlayerSymbol = (turns) => {
   let currentSymbol = 'X';
@@ -48,6 +49,8 @@ function App() {
 
           <GameBoard gameTurn={gameTurn} onSymbolChange={handleSymbolChange} />
         </div>
+
+        <Log gameTurn={gameTurn} />
       </main>
     </>
   );
