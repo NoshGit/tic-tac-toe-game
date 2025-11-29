@@ -25,7 +25,7 @@ function App() {
 
   const activePlayerSymbol = getActivePlayerSymbol(gameTurn);
 
-  const gameBoard = initialGameState;
+  const gameBoard = [...initialGameState.map((row) => [...row])];
 
   for (let turn of gameTurn) {
     const { row, col } = turn.symbol;
