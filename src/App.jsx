@@ -3,6 +3,14 @@ import GameBoard from './components/GameBoard';
 import Header from './components/Header';
 import Player from './components/Player';
 import Log from './components/Log';
+import GameOver from './components/GameOver';
+import { WINNING_COMBINATIONS } from './winning-combination';
+
+const initialGameState = [
+  [null, null, null],
+  [null, null, null],
+  [null, null, null],
+];
 
 const getActivePlayerSymbol = (turns) => {
   let currentSymbol = 'X';
@@ -17,6 +25,13 @@ function App() {
 
   const activePlayerSymbol = getActivePlayerSymbol(gameTurn);
 
+  const gameBoard = initialGameState;
+
+  for (let turn of gameTurn) {
+    const { row, col } = turn.symbol;
+    gameBoard[row][col] = turn.playerSymbol;
+  }
+
   const handleSymbolChange = (selectedRow, selectedCol) => {
     setGameTurn((turns) => {
       let currentSymbol = getActivePlayerSymbol(turns);
@@ -28,6 +43,26 @@ function App() {
       return [currentGameTurn, ...turns];
     });
   };
+
+  let winner;
+
+  for (let combination of WINNING_COMBINATIONS) {
+    const [first, second, third] = combination;
+    const firstSymbol = gameBoard[first.row][first.column];
+    const secondSymbol = gameBoard[second.row][second.column];
+    const thirdSymbol = gameBoard[third.row][third.column];
+
+    if (
+      firstSymbol &&
+      firstSymbol === secondSymbol &&
+      firstSymbol === thirdSymbol
+    ) {
+      winner = firstSymbol;
+      break;
+    }
+  }
+
+  let isDraw = gameTurn.length === 9 && !winner;
 
   return (
     <>
@@ -46,8 +81,8 @@ function App() {
               isActive={activePlayerSymbol === 'O'}
             />
           </ol>
-
-          <GameBoard gameTurn={gameTurn} onSymbolChange={handleSymbolChange} />
+          {(winner || isDraw) && <GameOver winner={winner} isDraw={isDraw} />}
+          <GameBoard board={gameBoard} onSymbolChange={handleSymbolChange} />
         </div>
 
         <Log gameTurn={gameTurn} />
