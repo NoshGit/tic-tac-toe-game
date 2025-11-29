@@ -44,6 +44,10 @@ function App() {
     });
   };
 
+  const handleRematch = () => {
+    setGameTurn([]);
+  };
+
   let winner;
 
   for (let combination of WINNING_COMBINATIONS) {
@@ -81,7 +85,13 @@ function App() {
               isActive={activePlayerSymbol === 'O'}
             />
           </ol>
-          {(winner || isDraw) && <GameOver winner={winner} isDraw={isDraw} />}
+          {(winner || isDraw) && (
+            <GameOver
+              winner={winner}
+              isDraw={isDraw}
+              onRematch={handleRematch}
+            />
+          )}
           <GameBoard board={gameBoard} onSymbolChange={handleSymbolChange} />
         </div>
 
