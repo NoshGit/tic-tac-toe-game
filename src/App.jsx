@@ -3,13 +3,29 @@ import GameBoard from './components/GameBoard';
 import Header from './components/Header';
 import Player from './components/Player';
 
-function App() {
-  const [activePlayerSymbol, setActivePlayerSymbolSymbol] = useState('X');
+const getActivePlayerSymbol = (turns) => {
+  let currentSymbol = 'X';
+  if (turns.length && turns[0].playerSymbol === 'X') {
+    currentSymbol = 'O';
+  }
+  return currentSymbol;
+};
 
-  const handleSymbolChange = () => {
-    setActivePlayerSymbolSymbol((playerSymbol) =>
-      playerSymbol === 'X' ? 'O' : 'X'
-    );
+function App() {
+  const [gameTurn, setGameTurn] = useState([]);
+
+  const activePlayerSymbol = getActivePlayerSymbol(gameTurn);
+
+  const handleSymbolChange = (selectedRow, selectedCol) => {
+    setGameTurn((turns) => {
+      let currentSymbol = getActivePlayerSymbol(turns);
+
+      const currentGameTurn = {
+        symbol: { row: selectedRow, col: selectedCol },
+        playerSymbol: currentSymbol,
+      };
+      return [currentGameTurn, ...turns];
+    });
   };
 
   return (
@@ -30,10 +46,7 @@ function App() {
             />
           </ol>
 
-          <GameBoard
-            symbol={activePlayerSymbol}
-            onSymbolChange={handleSymbolChange}
-          />
+          <GameBoard gameTurn={gameTurn} onSymbolChange={handleSymbolChange} />
         </div>
       </main>
     </>

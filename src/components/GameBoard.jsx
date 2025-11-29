@@ -1,27 +1,16 @@
-import { useState } from 'react';
-
 const initialGameState = [
   [null, null, null],
   [null, null, null],
   [null, null, null],
 ];
 
-export default function GameBoard({ symbol, onSymbolChange }) {
-  const [gameState, setGameState] = useState(initialGameState);
+export default function GameBoard({ gameTurn, onSymbolChange }) {
+  const gameState = initialGameState;
 
-  console.log('Current Game State:', gameState);
-
-  const handleCellClick = (rowIndex, cellIndex) => {
-    setGameState((prevGameState) => {
-      const updatedState = [
-        ...prevGameState.map((innerArray) => [...innerArray]),
-      ];
-      updatedState[rowIndex][cellIndex] = symbol;
-      return updatedState;
-    });
-
-    onSymbolChange();
-  };
+  for (let turn of gameTurn) {
+    const { row, col } = turn.symbol;
+    gameState[row][col] = turn.playerSymbol;
+  }
 
   return (
     <ol id="game-board">
@@ -30,7 +19,7 @@ export default function GameBoard({ symbol, onSymbolChange }) {
           <ol>
             {row.map((symbol, symbolIndex) => (
               <li key={symbolIndex} className="board-cell">
-                <button onClick={() => handleCellClick(rowIndex, symbolIndex)}>
+                <button onClick={() => onSymbolChange(rowIndex, symbolIndex)}>
                   {symbol}
                 </button>
               </li>
